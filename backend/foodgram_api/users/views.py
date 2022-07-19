@@ -1,10 +1,9 @@
+from api.serializers import FollowSerializer
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
 from rest_framework import permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
-from api.serializers import FollowSerializer
 
 from .models import CustomUser, Follow
 
@@ -39,7 +38,6 @@ class CustomUserViewSet(UserViewSet):
             serializer = self.get_serializer(data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        if request.method == "DELETE":
-            instance = get_object_or_404(Follow, user=user, following=following)
-            instance.delete()
-            return Response("Успешная отписка", status=status.HTTP_204_NO_CONTENT)
+        instance = get_object_or_404(Follow, user=user, following=following)
+        instance.delete()
+        return Response("Успешная отписка", status=status.HTTP_204_NO_CONTENT)
