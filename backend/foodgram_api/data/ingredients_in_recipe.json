@@ -1,0 +1,127 @@
+[
+{
+"amount": 2100, 
+"ingredient_id": 754,
+"recipe_id": 1
+},
+{
+"amount": 200, 
+"ingredient_id": 69,
+"recipe_id": 1
+},
+{
+"amount": 43, 
+"ingredient_id": 33,
+"recipe_id": 1
+},
+{
+"amount": 2100, 
+"ingredient_id": 888,
+"recipe_id": 1
+},
+{
+"amount": 200, 
+"ingredient_id": 69,
+"recipe_id": 2
+},
+{
+"amount": 43, 
+"ingredient_id": 33,
+"recipe_id": 2
+},
+{
+"amount": 2100, 
+"ingredient_id": 754,
+"recipe_id": 2
+},
+{
+"amount": 200, 
+"ingredient_id": 69,
+"recipe_id": 3
+},
+{
+"amount": 43, 
+"ingredient_id": 33,
+"recipe_id": 3
+},
+{
+"amount": 2100, 
+"ingredient_id": 754,
+"recipe_id": 3
+},
+{
+"amount": 200, 
+"ingredient_id": 45,
+"recipe_id": 3
+},
+{
+"amount": 43, 
+"ingredient_id": 888,
+"recipe_id": 3
+},
+{
+"amount": 2100, 
+"ingredient_id": 754,
+"recipe_id": 4
+},
+{
+"amount": 200, 
+"ingredient_id": 69,
+"recipe_id": 4
+},
+{
+"amount": 43, 
+"ingredient_id": 33,
+"recipe_id": 4
+},
+{
+"amount": 2100, 
+"ingredient_id": 754,
+"recipe_id": 5
+},
+{
+"amount": 200, 
+"ingredient_id": 69,
+"recipe_id": 5
+},
+{
+"amount": 43, 
+"ingredient_id": 33,
+"recipe_id": 5
+},
+{
+"amount": 2100, 
+"ingredient_id": 943,
+"recipe_id": 5
+},
+{
+"amount": 200, 
+"ingredient_id": 69,
+"recipe_id": 6
+},
+{
+"amount": 43, 
+"ingredient_id": 33,
+"recipe_id": 6
+},
+{
+"amount": 2100, 
+"ingredient_id": 754,
+"recipe_id": 6
+},
+{
+"amount": 200, 
+"ingredient_id": 69,
+"recipe_id": 7
+},
+{
+"amount": 43, 
+"ingredient_id": 33,
+"recipe_id": 7
+},
+{
+"amount": 2100, 
+"ingredient_id": 754,
+"recipe_id": 7
+}
+]

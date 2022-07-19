@@ -1,0 +1,31 @@
+[
+{ 
+    "is_superuser": true,
+    "is_staff": true,
+    "email": "admin@admin.ru",
+    "first_name": "admin",
+    "username": "admin",
+    "password": "pbkdf2_sha256$320000$b3bPG616pRhjdyRACQrCbj$q8lQigE8BzmmTS5EF9fF0yLNqBmbBgZINffUB6GXK+o="
+},
+{
+    "email": "test@test.ru",
+    "username": "test",
+    "first_name": "Тестировщик",
+    "last_name": "Строгий",
+    "password": "pbkdf2_sha256$320000$xev0vISv5Ax59gBI08VDQi$URhUQgkMyiG3Q1j5LzMjCRXoP/+wcx0zbQCUchdgUkk="
+},
+{
+    "email": "povar@povar.ru",
+    "username": "povar",
+    "first_name": "Повар",
+    "last_name": "Старший",
+    "password": "pbkdf2_sha256$320000$FJwgb0vFNACnUczOoXrh2v$l2T2BVOAgwOVFy6n/WSTndGPQo5tk0cSLW39SMk64yM="
+},
+{
+    "email": "woman@woman.ru",
+    "username": "woman",
+    "first_name": "Хозяйка",
+    "last_name": "Кухни",
+    "password": "pbkdf2_sha256$320000$TdoHoANxUC4gDrRZAUky9z$4/Q9E23nwvyduO/yc+hZQCHssgCLWRLRSTJ2dbcTWzM="
+}
+]

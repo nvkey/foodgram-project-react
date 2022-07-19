@@ -1,0 +1,6 @@
+[
+{"color": "yellow", "name": "Завтрак", "slug": "breackfast"},
+{"color": "green", "name": "Обед", "slug": "lunch"},
+{"color": "orange", "name": "Перекус", "slug": "snack"},
+{"color": "blue", "name": "Ужин", "slug": "dinner"}
+]
