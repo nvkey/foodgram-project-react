@@ -68,7 +68,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
     def get_image(self, obj):
         if bool(obj.image) is False:
-            return
+            return None
         return mark_safe(f'<img src="{obj.image.url}" height="100>')
 
     get_image.short_description = "Изображение"

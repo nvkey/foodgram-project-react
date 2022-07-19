@@ -32,17 +32,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPageNumberPaginator
 
     def get_queryset(self):
-        queryset = Recipe.objects.all()
         user = get_object_or_404(CustomUser, username=self.request.user)
         favorite = self.request.query_params.get("is_favorited")
         cart = self.request.query_params.get("is_in_shopping_cart")
         if favorite is not None:
             queryset_recipe_ids = user.favorite_recipes.all().values("recipe_id")
-            queryset = Recipe.objects.filter(pk__in=queryset_recipe_ids)
+            return Recipe.objects.filter(pk__in=queryset_recipe_ids)
         if cart is not None:
             queryset_recipe_ids = user.shopping_cart.all().values("recipe_id")
-            queryset = Recipe.objects.filter(pk__in=queryset_recipe_ids)
-        return queryset
+            return Recipe.objects.filter(pk__in=queryset_recipe_ids)
+        return Recipe.objects.all()
 
     def get_serializer_class(self):
         if self.action == "favorite" or self.action == "shopping_cart":
@@ -78,13 +77,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        if request.method == "DELETE":
-            instance = get_object_or_404(Favorite, user=user, recipe=recipe)
-            instance.delete()
-            return Response(
-                "Репцепт успешно удален из избранного",
-                status=status.HTTP_204_NO_CONTENT,
-            )
+        instance = get_object_or_404(Favorite, user=user, recipe=recipe)
+        instance.delete()
+        return Response(
+            "Репцепт успешно удален из избранного",
+            status=status.HTTP_204_NO_CONTENT,
+        )
 
     @action(
         detail=True,
@@ -107,13 +105,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(data)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-        if request.method == "DELETE":
-            instance = get_object_or_404(ShoppingCart, user=user, recipe=recipe)
-            instance.delete()
-            return Response(
-                "Репцепт успешно удален из списка покупок",
-                status=status.HTTP_204_NO_CONTENT,
-            )
+        instance = get_object_or_404(ShoppingCart, user=user, recipe=recipe)
+        instance.delete()
+        return Response(
+            "Репцепт успешно удален из списка покупок",
+            status=status.HTTP_204_NO_CONTENT,
+        )
 
     @action(
         detail=False,
