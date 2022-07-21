@@ -22,7 +22,7 @@ class Tag(models.Model):
         unique=True,
         validators=[
             RegexValidator(
-                regex="^[-a-zA-Z0-9_]+$", message="Invlaid slug, only ^[-a-zA-Z0-9_]+$"
+                regex="^[-a-zA-Z0-9_]+$", message="Only ^[-a-zA-Z0-9_]+$"
             )
         ],
     )
@@ -114,6 +114,11 @@ class TagsRecipe(models.Model):
     class Meta:
         verbose_name = "Тег рецпта"
         verbose_name_plural = "Теги рецепта"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["tag", "recipe"], name="unique_slug_recipe"
+            )
+        ]
 
 
 class IngredientInRecipe(models.Model):
@@ -178,3 +183,9 @@ class ShoppingCart(models.Model):
 
     class Meta:
         verbose_name = "Список покупок"
+        verbose_name_plural = "Списки покупок"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "recipe"], name="unique_user_recipe"
+            )
+        ]

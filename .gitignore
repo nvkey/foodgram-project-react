@@ -138,3 +138,4 @@ media/
 # прочее
 .vscode
 .env
+requirements_*

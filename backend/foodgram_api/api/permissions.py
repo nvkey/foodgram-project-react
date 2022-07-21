@@ -24,9 +24,5 @@ class AuthorOrStaffAccessPermissionOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS or request.user.is_superuser:
             return True
         if hasattr(request.user, cnst.ATTR_ROLE):
-            return (
-                obj.author == request.user
-                or request.user.role == cnst.ROLE_ADMIN
-                or request.user.role == cnst.ROLE_MODERATOR
-            )
+            return obj.author == request.user or request.user.role == cnst.ROLE_ADMIN
         return False

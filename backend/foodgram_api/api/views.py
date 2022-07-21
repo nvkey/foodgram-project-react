@@ -1,14 +1,11 @@
+from django.db import connection
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import permissions, status, viewsets
+from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
+from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
-from rest_framework.response import Response
-
-from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
-                            ShoppingCart, Tag)
 from users.models import CustomUser, Follow
-
 from .filters import IngredientFilter, RecipeFilter
 from .paginations import CustomPageNumberPaginator
 from .permissions import (AuthorOrStaffAccessPermissionOrReadOnly,
@@ -16,6 +13,7 @@ from .permissions import (AuthorOrStaffAccessPermissionOrReadOnly,
 from .serializers import (FavoriteSerializer, FollowSerializer,
                           IngredientSerializer, RecipeReadSerializer,
                           RecipeWriteSerializer, TagSerializer)
+from .services import create_action_recipe_or_error
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -44,8 +42,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Recipe.objects.all()
 
     def get_serializer_class(self):
-        if self.action == "favorite" or self.action == "shopping_cart":
-            return FavoriteSerializer
         if self.request.method in ["PUT", "POST", "PATCH"]:
             return RecipeWriteSerializer
         return RecipeReadSerializer
@@ -65,23 +61,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def favorite(self, request, pk):
         user = get_object_or_404(CustomUser, username=self.request.user)
         recipe = get_object_or_404(Recipe, pk=pk)
-
-        if request.method == "POST":
-            if Favorite.objects.filter(user=user, recipe=recipe).exists():
-                return Response(
-                    data=f"Рецепт {recipe.name} уже есть в избранном",
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            Favorite.objects.get_or_create(user=user, recipe=recipe)
-            data = get_object_or_404(Favorite, user=user, recipe=recipe)
-            serializer = self.get_serializer(data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        instance = get_object_or_404(Favorite, user=user, recipe=recipe)
-        instance.delete()
-        return Response(
-            "Репцепт успешно удален из избранного",
-            status=status.HTTP_204_NO_CONTENT,
+        method = request.method
+        model_action = Favorite
+        serializer_class = FavoriteSerializer
+        error_post_message = f"Рецепт {recipe.name} уже есть в избранном"
+        error_delete_message = "Репцепт успешно удален из избранного"
+        return create_action_recipe_or_error(
+            method,
+            user,
+            recipe,
+            model_action,
+            serializer_class,
+            error_post_message,
+            error_delete_message,
         )
 
     @action(
@@ -93,23 +85,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def shopping_cart(self, request, pk):
         user = get_object_or_404(CustomUser, username=self.request.user)
         recipe = get_object_or_404(Recipe, pk=pk)
-
-        if request.method == "POST":
-            if ShoppingCart.objects.filter(user=user, recipe=recipe).exists():
-                return Response(
-                    data=f"Рецепт {recipe.name} уже есть в списке покупок",
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            ShoppingCart.objects.get_or_create(user=user, recipe=recipe)
-            data = get_object_or_404(ShoppingCart, user=user, recipe=recipe)
-            serializer = self.get_serializer(data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        instance = get_object_or_404(ShoppingCart, user=user, recipe=recipe)
-        instance.delete()
-        return Response(
-            "Репцепт успешно удален из списка покупок",
-            status=status.HTTP_204_NO_CONTENT,
+        method = request.method
+        model_action = ShoppingCart
+        serializer_class = FavoriteSerializer
+        error_post_message = f"Рецепт {recipe.name} уже есть в списке покупок"
+        error_delete_message = "Репцепт успешно удален из списка покупок"
+        return create_action_recipe_or_error(
+            method,
+            user,
+            recipe,
+            model_action,
+            serializer_class,
+            error_post_message,
+            error_delete_message,
         )
 
     @action(
@@ -125,30 +113,45 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         recipes_list = recipes.values_list("name", flat=True)
 
-        ingredients_recipes = IngredientInRecipe.objects.filter(recipe__in=recipes)
-        ingredients = {}
-        for obj in ingredients_recipes:
-            key = obj.ingredient.id
-            name = obj.ingredient.name
-            measure = obj.ingredient.measurement_unit
-            amount = obj.amount
-            if key in ingredients:
-                ingredients.get(key)[1] += amount
-            else:
-                ingredients.update({key: [f"{name} ", amount, f" {measure}"]})
-        ingredients_list = []
-        for item in ingredients.values():
-            ingredients_list.append("".join(map(str, item)))
+        with connection.cursor() as cursor:
+            query = """
+                    with raw_data as (SELECT
+                    b.ingredient_id,
+                    b.amount,
+                    c.name as ingredient_name,
+                    c.measurement_unit
+                    FROM
+                    recipes_shoppingcart AS a
+                    JOIN
+                    recipes_ingredientinrecipe AS b
+                    on a.recipe_id=b.recipe_id
+                    JOIN
+                    recipes_ingredient as c
+                    on b.ingredient_id=c.id
+                    WHERE
+                    user_id=%s)
+                    select
+                    ingredient_name,
+                    SUM (amount),
+                    measurement_unit
+                    from raw_data
+                    group by
+                    ingredient_name, measurement_unit
+                    """
+            cursor.execute(query, [user.id])
+            cursor_list = [i for i in cursor]
+            ingredients_list = []
+            for ingredient in cursor_list:
+                line = [i for i in ingredient]
+                ingredients_list.append(" ".join(map(str, line)))
 
-        data = (
-            "Список покупок:\n"
-            "Список рецептов:\n"
-            + "\n".join(recipes_list)
-            + "\n\n"
-            + "Список всех ингредлиентов:\n"
-            + "\n".join(ingredients_list)
-            + "\n\n"
-        )
+            data = (
+                "Список рецептов:\n"
+                + "\n".join(recipes_list)
+                + "\n\n"
+                + "Список покупки ингредиентов:\n"
+                + "\n".join(ingredients_list)
+            )
         filename = "shopping_list.txt"
         response = HttpResponse(data, content_type="text/plain")
         response["Content-Disposition"] = "attachment; filename={0}".format(filename)

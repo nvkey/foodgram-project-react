@@ -3,9 +3,11 @@ from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 
 from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
-                            ShoppingCart, Tag, TagsRecipe)
+                            ShoppingCart, Tag)
 from users.models import Follow
 from users.serializers import CustomUserSerializer
+
+from .services import create_tags_ingredients
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -37,19 +39,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         tags = validated_data.pop("tags")
         ingredients = validated_data.pop("ingredients")
         recipe = Recipe.objects.create(**validated_data)
-
-        for tag in tags:
-            current_tag = get_object_or_404(Tag, id=tag.pk)
-            TagsRecipe.objects.get_or_create(recipe=recipe, tag=current_tag)
-
-        for ingredient in ingredients:
-            current_ingredient = get_object_or_404(Ingredient, id=ingredient["id"].id)
-            IngredientInRecipe.objects.get_or_create(
-                recipe=recipe,
-                ingredient=current_ingredient,
-                amount=ingredient["amount"],
-            )
-
+        create_tags_ingredients(recipe, tags, ingredients)
         return recipe
 
     def update(self, instance, validated_data):
@@ -58,17 +48,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         ingredients = validated_data.pop("ingredients")
         instance.ingredients.clear()
         instance.tags.clear()
-
-        for tag in tags:
-            current_tag = get_object_or_404(Tag, id=tag.pk)
-            TagsRecipe.objects.get_or_create(recipe=recipe, tag=current_tag)
-        for ingredient in ingredients:
-            current_ingredient = get_object_or_404(Ingredient, id=ingredient["id"].id)
-            IngredientInRecipe.objects.get_or_create(
-                recipe=recipe,
-                ingredient=current_ingredient,
-                amount=ingredient["amount"],
-            )
+        create_tags_ingredients(recipe, tags, ingredients)
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
@@ -180,7 +160,9 @@ class FollowSerializer(serializers.ModelSerializer):
     recipes = FollowRecipeSerializer(
         read_only=True, many=True, source="following.recipes"
     )
-    recipes_count = serializers.SerializerMethodField()
+    recipes_count = serializers.IntegerField(
+        source="following.recipes.count", read_only=True
+    )
 
     class Meta:
         model = Favorite
@@ -200,6 +182,3 @@ class FollowSerializer(serializers.ModelSerializer):
         if user.is_anonymous:
             return False
         return Follow.objects.filter(user=user, following=obj.following).exists()
-
-    def get_recipes_count(self, obj):
-        return obj.following.recipes.count()
