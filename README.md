@@ -1,7 +1,6 @@
 ## Проект Foodgram:
 ![Foodgram workflow](https://github.com/nvkey/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
 
-<<<<<<< HEAD
 Cайт Foodgram - «Продуктовый помощник». Позволяет делиться своими рецептами с другиии пользователями и автоматически составлять список покупок для вашего банкета.
 
 #### Основной функционал:
