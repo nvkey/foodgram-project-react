@@ -9,7 +9,7 @@ services:
       - ./.env
 
   backend:
-    image: nvkey/foodgram_backend:v1.22.07.2022
+    image: nvkey/foodgram_backend:latest
     volumes:
       - static_value:/app/static/
       - media_value:/app/media/

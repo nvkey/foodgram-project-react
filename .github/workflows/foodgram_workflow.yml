@@ -1,4 +1,4 @@
-name: Yamdb API workflow
+name: Foodgram API workflow
 
 on: [push]
 
