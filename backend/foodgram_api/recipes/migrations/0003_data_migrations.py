@@ -32,7 +32,7 @@ def add_data(apps, schema_editor):
         for data in initial_data:
             new_data = model(**data)
             new_data.save()
-        #     initial_data_list.append(new_data)
+            # initial_data_list.append(new_data)
         # total_data = [model(**data) for data in initial_data_list]
         # model.objects.bulk_create(total_data)
 

@@ -49,6 +49,7 @@ class IngredientAdminInLine(admin.TabularInline):
 class RecipeAdmin(admin.ModelAdmin):
     list_display = (
         "pk",
+        "name",
         "author",
         "text",
         "get_image",
@@ -58,6 +59,7 @@ class RecipeAdmin(admin.ModelAdmin):
     )
     list_editable = (
         "author",
+        "name",
         "text",
         "image",
         "cooking_time",

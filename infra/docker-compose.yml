@@ -6,11 +6,10 @@ services:
     volumes:
       - /var/lib/postgresql/data/
     env_file:
-      - ../backend/foodgram_api/.env
+      - ./.env
 
   backend:
-    build: ../backend/foodgram_api
-    restart: always
+    image: nvkey/foodgram_backend:v1.22.07.2022
     volumes:
       - static_value:/app/static/
       - media_value:/app/media/
@@ -18,9 +17,7 @@ services:
       - db
 
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: nvkey/foodgram_frontend:v0.30.06.2022
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:

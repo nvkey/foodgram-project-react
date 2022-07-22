@@ -32,13 +32,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPageNumberPaginator
 
     def get_queryset(self):
-        user = get_object_or_404(CustomUser, username=self.request.user)
         favorite = self.request.query_params.get("is_favorited")
         cart = self.request.query_params.get("is_in_shopping_cart")
         if favorite is not None:
+            user = get_object_or_404(CustomUser, username=self.request.user)
             queryset_recipe_ids = user.favorite_recipes.all().values("recipe_id")
             return Recipe.objects.filter(pk__in=queryset_recipe_ids)
         if cart is not None:
+            user = get_object_or_404(CustomUser, username=self.request.user)
             queryset_recipe_ids = user.shopping_cart.all().values("recipe_id")
             return Recipe.objects.filter(pk__in=queryset_recipe_ids)
         return Recipe.objects.all()
