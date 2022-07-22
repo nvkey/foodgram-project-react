@@ -6,7 +6,6 @@ from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
                             ShoppingCart, Tag)
 from users.models import Follow
 from users.serializers import CustomUserSerializer
-
 from .services import create_tags_ingredients
 
 

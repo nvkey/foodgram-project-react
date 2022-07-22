@@ -1,10 +1,12 @@
-from django.db import connection
+from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 from rest_framework import permissions, viewsets
 from rest_framework.decorators import action
+
+from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
+                            ShoppingCart, Tag)
 from users.models import CustomUser, Follow
 from .filters import IngredientFilter, RecipeFilter
 from .paginations import CustomPageNumberPaginator
@@ -110,48 +112,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
         user = get_object_or_404(CustomUser, username=self.request.user)
         queryset_recipes = user.shopping_cart.all()
         recipes = Recipe.objects.filter(pk__in=queryset_recipes.values("recipe_id"))
+        ingredients_list_dicts = (
+            IngredientInRecipe.objects.filter(recipe__in=recipes)
+            .values("ingredient__name", "ingredient__measurement_unit")
+            .annotate(amount=Sum("amount"))
+            .order_by("ingredient__name")
+        )
+        ingredients_list = []
+        i = 0
+        for item in ingredients_list_dicts:
+            i += 1
+            name = item.get("ingredient__name")
+            measurement_unit = item.get("ingredient__measurement_unit")
+            amount = item.get("amount")
+            line = f"{i} {name} {amount} {measurement_unit}"
+            ingredients_list.append(line)
 
-        recipes_list = recipes.values_list("name", flat=True)
-
-        with connection.cursor() as cursor:
-            query = """
-                    with raw_data as (SELECT
-                    b.ingredient_id,
-                    b.amount,
-                    c.name as ingredient_name,
-                    c.measurement_unit
-                    FROM
-                    recipes_shoppingcart AS a
-                    JOIN
-                    recipes_ingredientinrecipe AS b
-                    on a.recipe_id=b.recipe_id
-                    JOIN
-                    recipes_ingredient as c
-                    on b.ingredient_id=c.id
-                    WHERE
-                    user_id=%s)
-                    select
-                    ingredient_name,
-                    SUM (amount),
-                    measurement_unit
-                    from raw_data
-                    group by
-                    ingredient_name, measurement_unit
-                    """
-            cursor.execute(query, [user.id])
-            cursor_list = [i for i in cursor]
-            ingredients_list = []
-            for ingredient in cursor_list:
-                line = [i for i in ingredient]
-                ingredients_list.append(" ".join(map(str, line)))
-
-            data = (
-                "Список рецептов:\n"
-                + "\n".join(recipes_list)
-                + "\n\n"
-                + "Список покупки ингредиентов:\n"
-                + "\n".join(ingredients_list)
-            )
+        data = (
+            "Список покупки ингредиентов:\n"
+            + "\n".join(ingredients_list)
+        )
         filename = "shopping_list.txt"
         response = HttpResponse(data, content_type="text/plain")
         response["Content-Disposition"] = "attachment; filename={0}".format(filename)

@@ -52,6 +52,9 @@ class Ingredient(models.Model):
         verbose_name = "Ингредиент"
         verbose_name_plural = "Ингредиенты"
 
+    def __str__(self) -> str:
+        return str(self.name)
+
 
 class Recipe(models.Model):
     name = models.CharField(
@@ -159,8 +162,6 @@ class Favorite(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        blank=False,
-        null=False,
         related_name="favorite_recipes",
     )
 
