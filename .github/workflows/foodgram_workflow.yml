@@ -44,7 +44,7 @@ jobs:
           with:
             file: backend/foodgram_api/Dockerfile
             push: true
-            tags: ${{ secrets.DOCKER_USERNAME }}/api_yamdb:latest
+            tags: ${{ secrets.DOCKER_USERNAME }}/foodgram:latest
 
   deploy:
       if: ${{ github.ref == 'refs/heads/master' }}
@@ -60,8 +60,8 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             cd foodgram
-            sudo docker compose stop
-            sudo docker compose rm backend
+            sudo docker-compose down -v
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram:latest
             sudo docker compose up -d
-            sudo docker compose exec web python3 manage.py migrate
-            sudo docker compose exec web python3 manage.py collectstatic --no-input
+            sudo docker compose exec backend python3 manage.py migrate
+            sudo docker compose exec backend python3 manage.py collectstatic --no-input
