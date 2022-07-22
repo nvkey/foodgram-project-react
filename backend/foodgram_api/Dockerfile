@@ -2,7 +2,7 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-COPY ./requirements.txt .
+COPY ./foodgram_api/requirements.txt .
 
 RUN python3 -m pip install --upgrade pip
 
