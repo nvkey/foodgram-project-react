@@ -44,7 +44,7 @@ jobs:
           with:
             file: backend/foodgram_api/Dockerfile
             push: true
-            tags: ${{ secrets.DOCKER_USERNAME }}/foodgram:latest
+            tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
 
   deploy:
       if: ${{ github.ref == 'refs/heads/master' }}
@@ -61,7 +61,7 @@ jobs:
           script: |
             cd foodgram
             sudo docker-compose down -v
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
             sudo docker compose up -d
             sudo docker compose exec backend python3 manage.py migrate
             sudo docker compose exec backend python3 manage.py collectstatic --no-input
