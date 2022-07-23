@@ -54,6 +54,46 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+    def validate_tags(self, value):
+        if not value:
+            raise serializers.ValidationError("Добавьте не менее одного тега")
+        if len(set(value)) != len(value):
+            raise serializers.ValidationError("Теги повторяютяя")
+        return value
+
+    def validate_ingredients(self, value):
+        # проверка наличия
+        if not value:
+            raise serializers.ValidationError("Добавьте не менее одного ингредиента")
+        # проверка повтора ингредиента
+        id_list = []
+        for item in value:
+            id = item.get("id")
+            id_list.append(id)
+        if len(set(id_list)) != len(id_list):
+            raise serializers.ValidationError("Ингредиентов повторяютяя")
+        # проверка количества ингредиента
+        for item in value:
+            amount = item.get("amount")
+            if amount < 1:
+                raise serializers.ValidationError(
+                    "Количество ингредиента не может быть менее 1"
+                )
+            if amount > 10000:
+                raise serializers.ValidationError(
+                    "Количество ингредиента не может быть более 10000"
+                )
+        return value
+
+    def validate_cooking_time(self, value):
+        if value < 1:
+            raise serializers.ValidationError("Время приготовления не может быть менее 1")
+        if value > 1440:
+            raise serializers.ValidationError(
+                "Время приготовления не может быть более 1440"
+            )
+        return value
+
     def to_representation(self, instance):
         return RecipeReadSerializer(instance, context=self.context).data
 
