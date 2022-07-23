@@ -58,7 +58,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         if not value:
             raise serializers.ValidationError("Добавьте не менее одного тега")
         if len(set(value)) != len(value):
-            raise serializers.ValidationError("Теги повторяютяя")
+            raise serializers.ValidationError("Теги повторяются")
         return value
 
     def validate_ingredients(self, value):
@@ -71,7 +71,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             id = item.get("id")
             id_list.append(id)
         if len(set(id_list)) != len(id_list):
-            raise serializers.ValidationError("Ингредиентов повторяютяя")
+            raise serializers.ValidationError("Ингредиенты повторяются")
         # проверка количества ингредиента
         for item in value:
             amount = item.get("amount")
