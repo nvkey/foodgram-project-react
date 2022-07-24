@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
-
+from rest_framework.exceptions import APIException
 from recipes.models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
                             ShoppingCart, Tag)
 from users.models import Follow
@@ -71,7 +71,7 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
             id = item.get("id")
             id_list.append(id)
         if len(set(id_list)) != len(id_list):
-            raise serializers.ValidationError("Ингредиенты повторяются")
+            raise APIException("Ингредиенты повторяются")
         # проверка количества ингредиента
         for item in value:
             amount = item.get("amount")

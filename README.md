@@ -35,6 +35,18 @@ cd foodgram-project-react/infra
 ```
 ## Запуск проекта(используется Docker):
 
+Для запуска проекта требуется создать файл .env со следующими переменными:
+```bash
+# пример
+SECRET_KEY="django-insecure-^asdasdfvhgasfdasdfh;lkajsdfkj;hasd;lfk"
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+DB_HOST=db
+DB_PORT=5432
+```
+
 Запуск docker-compose:
 ``` bash
 docker compose up -d --build 
