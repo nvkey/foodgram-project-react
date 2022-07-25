@@ -133,9 +133,9 @@ dmypy.json
 
 # папки со статикой и медиа
 static/
-media/
+
 
 # прочее
 .vscode
-.env
+.env*
 requirements_*

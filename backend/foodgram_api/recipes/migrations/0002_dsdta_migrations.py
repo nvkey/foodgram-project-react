@@ -28,19 +28,17 @@ def add_data(apps, schema_editor):
         with open(path, encoding="utf-8") as file:
             initial_data = json.load(file)
         model = apps.get_model(data_flow[1], data_flow[2])
-        # initial_data_list =[]
+        initial_data_list = []
         for data in initial_data:
             new_data = model(**data)
-            new_data.save()
-            # initial_data_list.append(new_data)
-        # total_data = [model(**data) for data in initial_data_list]
-        # model.objects.bulk_create(total_data)
+            initial_data_list.append(new_data)
+        model.objects.bulk_create(initial_data_list)
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("recipes", "0002_initial"),
+        ("recipes", "0001_initial"),
     ]
 
     operations = [migrations.RunPython(add_data)]

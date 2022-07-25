@@ -1,5 +1,4 @@
 from django.db.models import Sum
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, viewsets
@@ -15,7 +14,7 @@ from .permissions import (AuthorOrStaffAccessPermissionOrReadOnly,
 from .serializers import (FavoriteSerializer, FollowSerializer,
                           IngredientSerializer, RecipeReadSerializer,
                           RecipeWriteSerializer, TagSerializer)
-from .services import create_action_recipe_or_error
+from .services import create_action_recipe_or_error, ingredients_list_to_pdf
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -128,15 +127,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             amount = item.get("amount")
             line = f"{i} {name} {amount} {measurement_unit}"
             ingredients_list.append(line)
-
-        data = (
-            "Список покупки ингредиентов:\n"
-            + "\n".join(ingredients_list)
-        )
-        filename = "shopping_list.txt"
-        response = HttpResponse(data, content_type="text/plain")
-        response["Content-Disposition"] = "attachment; filename={0}".format(filename)
-        return response
+        return ingredients_list_to_pdf(ingredients_list)
 
 
 class IngredientViewSet(viewsets.ModelViewSet):

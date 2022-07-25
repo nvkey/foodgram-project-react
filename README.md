@@ -31,14 +31,13 @@ Cайт Foodgram - «Продуктовый помощник». Позволяе
 Клонировать репозиторий и перейти в него в командной строке:
 ``` bash
 git clone git@github.com:nvkey/foodgram-project-react.git
-cd foodgram-project-react/infra
+cd foodgram-project-react
 ```
 ## Запуск проекта(используется Docker):
 
-Для запуска проекта требуется создать файл .env со следующими переменными:
+Для запуска проекта требуется создать файл .env в папке /infra/ со следующими ключаме:
 ```bash
-# пример
-SECRET_KEY="django-insecure-^asdasdfvhgasfdasdfh;lkajsdfkj;hasd;lfk"
+SECRET_KEY=<ваш_django_секретный_ключ>
 DB_ENGINE=django.db.backends.postgresql
 DB_NAME=postgres
 POSTGRES_USER=postgres
@@ -46,9 +45,19 @@ POSTGRES_PASSWORD=postgres
 DB_HOST=db
 DB_PORT=5432
 ```
+Вы можете сгенерировать `DJANGO_SECRET_KEY` следующим образом. Из директории проекта /backend/ выполнить:
+
+```bash
+python manage.py shell
+from django.core.management.utils import get_random_secret_key  
+get_random_secret_key()
+```
+Полученный ключ скопировать в .env
+
 
 Запуск docker-compose:
 ``` bash
+cd infra
 docker compose up -d --build 
 ```
 
