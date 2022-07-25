@@ -2,49 +2,49 @@
 {
 "name": "Французские тосты", 
 "text": "Модный завтрак, а так просто хлеб с ягодами",
-"image": "http://nvkey.ddns.net/media/recipes/French_Toast.jpg",
+"image": "http://178.154.195.252/media/recipes/French_Toast.jpg",
 "cooking_time": "20",
 "author_id": 3
 },
 {
 "name": "Колбаски",
 "text": "Вкусно и быстро, но не полезно",
-"image": "http://nvkey.ddns.net/media/recipes/Sausages.jpg",
+"image": "http://178.154.195.252/media/recipes/Sausages.jpg",
 "cooking_time": "25",
 "author_id": 3
 },
 {
 "name": "Паста с беконом",
 "text": "Макароны с мясом обычные",
-"image": "http://nvkey.ddns.net/media/recipes/Pasta_with_bacon.jpg",
+"image": "http://178.154.195.252/media/recipes/Pasta_with_bacon.jpg",
 "cooking_time": "25",
 "author_id": 3
 },
 {
 "name": "Английский завтрак",
 "text": "Съел завтрак как буд-то в Англию попал...",
-"image": "http://nvkey.ddns.net/media/recipes/English_Breakfast.jpg",
+"image": "http://178.154.195.252/media/recipes/English_Breakfast.jpg",
 "cooking_time": "25",
 "author_id": 4
 },
 {
 "name": "Французский тост с сиропом агавы",
 "text": "Берем хлеб и мажем варенье",
-"image": "http://nvkey.ddns.net/media/recipes/French_toast _ith_agave_syrup.jpg",
+"image": "http://178.154.195.252/media/recipes/French_toast _ith_agave_syrup.jpg",
 "cooking_time": "25",
 "author_id": 4
 },
 {
 "name": "Вафли с яйцом 'Бенедикт' и лососем",
 "text": "Это что-то очень вкусное",
-"image": "http://nvkey.ddns.net/media/recipes/Waffles_with_eggs_Benedict_and_salmon.jpg",
+"image": "http://178.154.195.252/media/recipes/Waffles_with_eggs_Benedict_and_salmon.jpg",
 "cooking_time": 25,
 "author_id": 3
 },
 {
 "name": "Круассан с омлетом и голландским сосусом",
 "text": "Тут мне захотелось покушать",
-"image": "http://nvkey.ddns.net/media/recipes/Croissant_with_omelet_and_Hollandaise.jpg",
+"image": "http://178.154.195.252/media/recipes/Croissant_with_omelet_and_Hollandaise.jpg",
 "cooking_time": "25",
 "author_id": 3
 }
